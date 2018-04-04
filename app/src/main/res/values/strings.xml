@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">ThuNghiem01</string>
+
+    <!--layout_main-->
+    <string name="layout_activity_main_title">Danh Sách Đơn Hàng</string>
+    <string name="layout_activity_main_table_column1">Khách Hàng</string>
+    <string name="layout_activity_main_table_column2">Số Đơn Hàng</string>
+    <string name="layout_activity_main_table_column3">Giá trị DH</string>
+    <string name="layout_activity_main_table_buttonThem">Thêm mới</string>
+    <string name="layout_activity_main_table_buttonDieuChinh">Điều chỉnh</string>
+    <string name="layout_activity_main_table_buttonXoa">Xóa</string>
+    <!--End-->
+
+
+    <!--layout_OrderOrEdit-->
+    <string name="layout_activity_orderoredit_row1_c1">Tên CH</string>
+    <string name="layout_activity_orderoredit_row2_c1">Địa chỉ</string>
+    <string name="layout_activity_orderoredit_row3_c1">Người LH</string>
+    <string name="layout_activity_orderoredit_row4_c1">Số dt</string>
+    <string name="layout_activity_orderoredit_row5_c1">Ngày viếng</string>
+    <string name="layout_activity_orderoredit_row6_c1">Số DH</string>
+
+    <string name="layout_activity_orderoredit_row1_c2">Nhập tên cửa hàng</string>
+    <string name="layout_activity_orderoredit_row2_c2">Nhập Địa chỉ</string>
+    <string name="layout_activity_orderoredit_row3_c2">Nhập Người LH</string>
+    <string name="layout_activity_orderoredit_row4_c2">Nhập Số dt</string>
+    <string name="layout_activity_orderoredit_row5_c2">Nhập Ngày viếng</string>
+    <string name="layout_activity_orderoredit_row6_c2">Nhập Số DH</string>
+
+    <string name="layout_activity_orderoredit_listview_c1">Sản phẩm</string>
+    <string name="layout_activity_orderoredit_listview_c2">Thành tiền</string>
+    <string name="layout_activity_orderoredit_sum">Tổng</string>
+    <string name="layout_activity_orderoredit_sumvalue">Tổng giá trị hóa đơn</string>
+
+    <string name="layout_activity_orderoredit_row4_c3">Check</string>
+
+    <string name="layout_activity_orderoredit_buttonback">Trở về</string>
+    <string name="layout_activity_orderoredit_buttonsave">Lưu</string>
+    <!--End-->
+
+    <!--layout_DialogAmount-->
+    <string name="layout_activity_dialogamount_buttoncancel">Hủy</string>
+    <string name="layout_activity_dialogamount_buttonok">Đồng ý</string>
+
+    <string name="layout_activity_dialogamount_row1_c1">Mã SP</string>
+    <string name="layout_activity_dialogamount_row2_c1">Tên SP</string>
+    <string name="layout_activity_dialogamount_row3_c1">Giá</string>
+    <string name="layout_activity_dialogamount_row4_c1">Số lượng</string>
+    <string name="layout_activity_dialogamount_row4_c2">Nhập Số lượng</string>
+    <string name="layout_activity_dialogamount_textview_default">DEFAULT</string>
+</resources>
