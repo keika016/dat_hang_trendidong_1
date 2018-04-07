@@ -20,11 +20,11 @@
     <string name="layout_activity_orderoredit_row5_c1">Ngày viếng</string>
     <string name="layout_activity_orderoredit_row6_c1">Số DH</string>
 
-    <string name="layout_activity_orderoredit_row1_c2">Nhập tên cửa hàng</string>
-    <string name="layout_activity_orderoredit_row2_c2">Nhập Địa chỉ</string>
-    <string name="layout_activity_orderoredit_row3_c2">Nhập Người LH</string>
-    <string name="layout_activity_orderoredit_row4_c2">Nhập Số dt</string>
-    <string name="layout_activity_orderoredit_row5_c2">Nhập Ngày viếng</string>
+    <string name="layout_activity_orderoredit_row1_c2">Nhập tên cửa hàng (P/b Hoa-Thường)</string>
+    <string name="layout_activity_orderoredit_row2_c2">Địa chỉ (P/b Hoa-Thường)</string>
+    <string name="layout_activity_orderoredit_row3_c2">Người LH</string>
+    <string name="layout_activity_orderoredit_row4_c2">Số dt</string>
+    <string name="layout_activity_orderoredit_row5_c2">Ngày viếng</string>
     <string name="layout_activity_orderoredit_row6_c2">Nhập Số DH</string>
 
     <string name="layout_activity_orderoredit_listview_c1">Sản phẩm</string>
@@ -33,6 +33,7 @@
     <string name="layout_activity_orderoredit_sumvalue">Tổng giá trị hóa đơn</string>
 
     <string name="layout_activity_orderoredit_row4_c3">Check</string>
+    <string name="layout_activity_orderoredit_row4_c3_redo">Redo</string>
 
     <string name="layout_activity_orderoredit_buttonback">Trở về</string>
     <string name="layout_activity_orderoredit_buttonsave">Lưu</string>
@@ -45,7 +46,8 @@
     <string name="layout_activity_dialogamount_row1_c1">Mã SP</string>
     <string name="layout_activity_dialogamount_row2_c1">Tên SP</string>
     <string name="layout_activity_dialogamount_row3_c1">Giá</string>
-    <string name="layout_activity_dialogamount_row4_c1">Số lượng</string>
-    <string name="layout_activity_dialogamount_row4_c2">Nhập Số lượng</string>
+    <string name="layout_activity_dialogamount_row4_c1">Số lượng tồn</string>
+    <string name="layout_activity_dialogamount_row5_c1">Số lượng</string>
+    <string name="layout_activity_dialogamount_row5_c2">Nhập Số lượng</string>
     <string name="layout_activity_dialogamount_textview_default">DEFAULT</string>
 </resources>

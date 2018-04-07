@@ -29,10 +29,11 @@
                 android:textStyle="normal|bold" />
 
             <EditText
+                android:id="@+id/activity_order_or_edit_tencuahang"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:hint="@string/layout_activity_orderoredit_row1_c2"/>
+                android:hint="@string/layout_activity_orderoredit_row1_c2" />
         </LinearLayout>
 
         <LinearLayout
@@ -50,10 +51,12 @@
                 android:textStyle="normal|bold" />
 
             <EditText
+                android:id="@+id/activity_order_or_edit_diachi"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:hint="@string/layout_activity_orderoredit_row2_c2" />
+                android:hint="@string/layout_activity_orderoredit_row2_c2"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -71,10 +74,15 @@
                 android:textStyle="normal|bold" />
 
             <EditText
+                android:id="@+id/activity_order_or_edit_nguoilienhe"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:hint="@string/layout_activity_orderoredit_row3_c2" />
+                android:hint="@string/layout_activity_orderoredit_row3_c2"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
         </LinearLayout>
 
         <LinearLayout
@@ -92,10 +100,15 @@
                 android:textStyle="normal|bold" />
 
             <EditText
+                android:id="@+id/activity_order_or_edit_sodienthoai"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:hint="@string/layout_activity_orderoredit_row4_c2" />
+                android:hint="@string/layout_activity_orderoredit_row4_c2"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
         </LinearLayout>
 
         <LinearLayout
@@ -113,17 +126,38 @@
                 android:textStyle="normal|bold" />
 
             <EditText
+                android:id="@+id/activity_order_or_edit_ngayvieng"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="6"
-                android:hint="@string/layout_activity_orderoredit_row5_c2" />
-            <Button
+                android:hint="@string/layout_activity_orderoredit_row5_c2"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="@string/layout_activity_orderoredit_row4_c3"
-                android:background="@drawable/shape_3"
-                android:layout_margin="9dp"/>
+                android:layout_weight="2">
+                <Button
+                    android:id="@+id/activity_order_or_edit_buttoncheck"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/shape_3"
+                    android:text="@string/layout_activity_orderoredit_row4_c3" />
+                <Button
+                    android:id="@+id/activity_order_or_edit_buttonredo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/shape_3"
+                    android:text="@string/layout_activity_orderoredit_row4_c3_redo"
+                    android:enabled="false"
+                    android:visibility="invisible"/>
+            </RelativeLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -141,10 +175,11 @@
                 android:textStyle="normal|bold" />
 
             <EditText
+                android:id="@+id/activity_order_or_edit_sodonhang"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:hint="@string/layout_activity_orderoredit_row6_c2" />
+                android:hint="@string/layout_activity_orderoredit_row6_c2"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -153,12 +188,13 @@
         android:layout_height="0dp"
         android:layout_weight="3.25"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:background="@drawable/shape_1">
+            android:background="@drawable/shape_1"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
@@ -176,12 +212,23 @@
                 android:text="@string/layout_activity_orderoredit_listview_c2"
                 android:textStyle="normal|bold" />
         </LinearLayout>
-        <ListView
-            android:id="@+id/activity_order_or_edit_listview"
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.25"
-            android:background="@drawable/shape_1"></ListView>
+            android:layout_weight="2.25">
+            <ListView
+                android:id="@+id/activity_order_or_edit_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_1"></ListView>
+            <ImageView
+                android:id="@+id/activity_order_or_edit_imageListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorGray"/>
+        </RelativeLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -189,21 +236,22 @@
         android:layout_height="0dp"
         android:layout_weight="0.75">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="@string/layout_activity_orderoredit_sum"
-                android:textStyle="normal|bold" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/layout_activity_orderoredit_sum"
+            android:textStyle="normal|bold" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="8"
-                android:gravity="center"
-                android:text="@string/layout_activity_orderoredit_sumvalue"
-                android:textStyle="normal|bold" />
+        <TextView
+            android:id="@+id/activity_order_or_edit_tvTonggGiaTriHD"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:gravity="center"
+            android:text="@string/layout_activity_orderoredit_sumvalue"
+            android:textStyle="normal|bold" />
 
     </LinearLayout>
 
@@ -221,7 +269,7 @@
             android:gravity="right">
 
             <Button
-                android:id="@+id/activity_main_button"
+                android:id="@+id/activity_order_or_edit_buttonBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"

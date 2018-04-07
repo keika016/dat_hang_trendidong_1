@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/item_lv_activity_main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="10">
+        <TextView
+            android:id="@+id/item_lv_activity_main_cuaHang"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:text="@string/layout_activity_main_table_column1"
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/item_lv_activity_main_idDDH"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center|left"
+            android:paddingLeft="2dp"
+            android:text="@string/layout_activity_main_table_column2"
+            android:textColor="@color/colorBlack" />
+        <TextView
+            android:id="@+id/item_lv_activity_main_giaTriDDH"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center|left"
+            android:paddingLeft="2dp"
+            android:text="@string/layout_activity_main_table_column3"
+            android:textColor="@color/colorBlack" />
+</LinearLayout>
