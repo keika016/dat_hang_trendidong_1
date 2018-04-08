@@ -47,7 +47,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
     private ArrayList<String> listThanhTien;
     private DonDatHang mDonDatHang;
     private ArrayList<ChiTietDonDH> listChiTietDonDH;
-
     //Từ Main qua
     private static final String COMMAND = "command";
     private static final String COMMAND_THEMMOI = "themmoi";
@@ -161,7 +160,7 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
             Bundle b = getIntent().getExtras();
             mDonDatHang = (DonDatHang) b.get(COMMAND_DIEUCHINH_DONDH);
             CuaHang a = dbTuAssets.checkCuaHangExist2(mDonDatHang.getIdCH());
-
+            Log.e("Order or Edit", "" + mDonDatHang);
             edtTenCuaHang.setText(a.getTenCH() + "");
             edtDiaChi.setText(a.getDiaChi() + "");
             edtNguoiLienHe.setText(a.getNguoiLH() + "");
@@ -383,6 +382,7 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         }
+
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + mDonDatHang.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + listChiTietDonDH.toString() + "\n");
@@ -390,11 +390,21 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + listThanhTien.toString() + "\n");
         if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
             themMoi_themDonDatHangVaoDB(mDonDatHang, listChiTietDonDH, listSPUpdate);
+        else
+            dieuChinh_dieuChinhDonHanhVaoDB(mDonDatHang, listChiTietDonDH, listSPUpdate);
+
     }
 
     private void themMoi_themDonDatHangVaoDB(DonDatHang ddh, ArrayList<ChiTietDonDH> listChiTiet, ArrayList<SanPham> listSanPham) {
         dbTuAssets.themDonDatHang(ddh);
         dbTuAssets.themChiTietDDH(listChiTiet);
+        dbTuAssets.updateSanPham(listSanPham);
+    }
+
+    private void dieuChinh_dieuChinhDonHanhVaoDB(DonDatHang ddh, ArrayList<ChiTietDonDH> listChiTiet, ArrayList<SanPham> listSanPham) {
+        dbTuAssets.updateDonDatHang(ddh);
+        dbTuAssets.updateChitiet(listChiTiet);
+        dbTuAssets.themChiTietDDH_withCheckExist(listChiTiet);
         dbTuAssets.updateSanPham(listSanPham);
     }
 

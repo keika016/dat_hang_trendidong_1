@@ -273,6 +273,24 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void themChiTietDDH_withCheckExist(ArrayList<ChiTietDonDH> listChiTietDDH) {
+        ArrayList<ChiTietDonDH> listCTInsert = new ArrayList<ChiTietDonDH>();
+        for (ChiTietDonDH item : listChiTietDDH) {
+            String query = "select * from ChiTietDonDH where  idDDH=" + item.getIdDDH() + " and idSP=" + item.getIdSP() + ";";
+            openDatabase();
+            Cursor cursor = mDatabase.rawQuery(query, null);
+            cursor.moveToFirst();
+            if (cursor.isBeforeFirst()) {
+                //đơn hàng không tồn tại
+                listCTInsert.add(item);
+            } else {
+            }
+            cursor.close();
+            closeDatabase();
+        }
+        themChiTietDDH(listCTInsert);
+    }
+
     public void updateSanPham(ArrayList<SanPham> listSpUpdate) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (SanPham item : listSpUpdate) {
@@ -283,6 +301,28 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         }
         db.close();
     }
+
+    public void updateDonDatHang(DonDatHang ddh) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DONDATHANG_ATTRI_GIATRIDDH, ddh.getGiaTriDDH());
+        values.put(DONDATHANG_ATTRI_IDCUAHANG, ddh.getIdCH());
+        //update thành công sẽ trả về giá trị là tổng số dòng của table mà update được
+        int i = db.update(DONDATHANG_TB, values, DONDATHANG_ATTRI_IDDDH + "=?", new String[]{ddh.getIdDDH() + ""});
+        db.close();
+    }
+
+    public void updateChitiet(ArrayList<ChiTietDonDH> listCt) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (ChiTietDonDH item : listCt) {
+            ContentValues values = new ContentValues();
+            values.put(CHITIETDONDH_ATTRI_SOLUONG, item.getSoLuong());
+            //update thành công sẽ trả về giá trị là tổng số dòng của table mà update được
+            int i = db.update(CHITIETDONDH_TB, values, CHITIETDONDH_ATTRI_IDDDH + "=? and " + CHITIETDONDH_ATTRI_IDSANPHAM + "=?", new String[]{item.getIdDDH() + "", item.getIdSP() + ""});
+        }
+        db.close();
+    }
+
 
     public void xoaDonHang(DonDatHang ddh) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -295,5 +335,11 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         db.delete(CHITIETDONDH_TB, CHITIETDONDH_ATTRI_IDDDH + " =? ", new String[]{ct.getIdDDH() + ""});
         db.close();
     }
+
+    /*public void xoaChiTietDDHbyIdSP(ChiTietDonDH ct) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(CHITIETDONDH_TB, CHITIETDONDH_ATTRI_IDDDH + " =? and " + CHITIETDONDH_ATTRI_IDSANPHAM + "=?", new String[]{ct.getIdDDH() + "", ct.getIdSP() + ""});
+        db.close();
+    }*/
 
 }
