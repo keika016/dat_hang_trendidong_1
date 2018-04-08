@@ -2,7 +2,6 @@ package com.keika.thunghiem01;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 import com.keika.thunghiem01.adapter.AdapterLV_MainActivity;
 import com.keika.thunghiem01.database.DatabaseDatHang;
 import com.keika.thunghiem01.model.ChiTietDonDH;
-import com.keika.thunghiem01.model.CuaHang;
 import com.keika.thunghiem01.model.DonDatHang;
 import com.keika.thunghiem01.model.SanPham;
 

@@ -2,7 +2,6 @@ package com.keika.thunghiem01;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +29,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 
 public class OrderOrEditActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -59,6 +57,7 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
     private static final String COMMAND_SANPHAM = "sanpham";
     private static final String COMMAND_SOLUONG = "soluong";
     private static final String COMMAND_SOLUONGTON = "soluongton";
+    private static final String COMMAND_SOLUONGSP = "soluongsp";
     private static final int REQUEST_CODE = 1;
 
     @Override
@@ -161,8 +160,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
             Bundle b = getIntent().getExtras();
             mDonDatHang = (DonDatHang) b.get(COMMAND_DIEUCHINH_DONDH);
-            Log.e("Order or Edit", mDonDatHang + "");
-            Log.e("Order or Edit", dbTuAssets.checkCuaHangExist2(mDonDatHang.getIdCH()) + "");
             CuaHang a = dbTuAssets.checkCuaHangExist2(mDonDatHang.getIdCH());
 
             edtTenCuaHang.setText(a.getTenCH() + "");
@@ -172,6 +169,8 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
             edtSoDH.setText(mDonDatHang.getIdDDH() + "");
             edtNgayVieng.setText(mDonDatHang.getNgayVieng() + "");
             setEditTextUnTouch(edtSoDH);
+            setEditTextUnTouch(edtTenCuaHang);
+            setEditTextUnTouch(edtDiaChi);
             dieuChinh_LoadListSanPham();
             setButtonEnable(btnRedo);
             setButtonDisable(btnCheck);
@@ -179,31 +178,36 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void dieuChinh_LoadListSanPham() {
-        if (trangThai.compareTo(COMMAND_DIEUCHINH_DONDH) == 0) {
+        if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
             listSanPham.clear();
             listChiTietDonDH.clear();
             listThanhTien.clear();
             listSanPham.addAll(dbTuAssets.getListSanPhamConHang());
             listChiTietDonDH.addAll(dbTuAssets.getListChiTietDDHByIdDDH(mDonDatHang.getIdDDH()));
+            Log.e("OrderOrEdit", "onStop" + listChiTietDonDH.toString());
+            listSanPham.addAll(dbTuAssets.getListSanPhamConHang());
 
+            ArrayList<ChiTietDonDH> listCTDemo = listChiTietDonDH;
             boolean flag = false;
             for (SanPham sp : listSanPham) {
-                for (ChiTietDonDH ct : listChiTietDonDH) {
+                for (ChiTietDonDH ct : listCTDemo) {
                     if (ct.getIdSP() == sp.getIdSP()) {
                         long thanhtien = ct.getSoLuong() * Long.parseLong(sp.getGiaSP());
                         listThanhTien.add(thanhtien + "");
                         flag = true;
+                        listCTDemo.remove(ct);
                         break;
                     }
                 }
-                if (flag == true)
+                if (flag == true) {
+                    flag = false;
                     continue;
-                else {
+                } else {
                     listThanhTien.add("0");
                 }
             }
+
             adapterLV_orderOrEdit.notifyDataSetChanged();
-            mDonDatHang.setNgayVieng(edtNgayVieng.getText().toString().trim() + "");
             tvTongGiaTriHD.setText(mDonDatHang.getGiaTriDDH() + "");
             imageView.setVisibility(View.INVISIBLE);
             listViewOrderOrEdit.setVisibility(View.VISIBLE);
@@ -231,9 +235,9 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
 
     private void themMoi_LoadInfoCuaHang(CuaHang cuaHang) {
         setEditTextUnTouch(edtTenCuaHang);
-        setEditTextUnTouch(edtSoDH);
+        setEditTextUnTouch(edtDiaChi);
         if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
-            setEditTextUnTouch(edtDiaChi);
+            setEditTextUnTouch(edtSoDH);
         edtNguoiLienHe.setText(cuaHang.getNguoiLH() + "");
         edtSoDT.setText(cuaHang.getSoDT());
 
@@ -242,7 +246,13 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         imageView.setVisibility(View.INVISIBLE);
         listViewOrderOrEdit.setVisibility(View.VISIBLE);
 
-        mDonDatHang.setIdCH(cuaHang.getIdCH());
+        Bundle b = getIntent().getExtras();
+        DonDatHang a = (DonDatHang) b.get(COMMAND_DIEUCHINH_DONDH);
+        if (a.getIdCH() != cuaHang.getIdCH()) {
+            mDonDatHang.setIdCH(cuaHang.getIdCH());
+            setButtonLuuEnable();
+        }
+
         mDonDatHang.setIdDDH(Integer.parseInt(edtSoDH.getText().toString().trim()));
     }
 
@@ -295,7 +305,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.activity_order_or_edit_buttoncheck:
-
                 if (checkEditTextNotEmpty() == true) {
                     if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
                         if (checkLaSoNguyenDuong(edtSoDH.getText().toString().trim())) {
@@ -319,9 +328,10 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                     } else {
                         CuaHang a = new CuaHang();
                         a = dbTuAssets.checkTenCuaHangExist(edtTenCuaHang.getText().toString().trim(), edtDiaChi.getText().toString().trim());
-                        if (a != null)
+                        if (a != null) {
+                            Toast.makeText(this, "Check Đúng Hết", Toast.LENGTH_SHORT).show();
                             themMoi_LoadInfoCuaHang(a);
-                        else {
+                        } else {
                             String s = "-Cửa hàng hoặc Địa Chỉ không tồn tại ";
                             Toast.makeText(this, "Sai: " + s, Toast.LENGTH_SHORT).show();
                         }
@@ -343,16 +353,14 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 listViewOrderOrEdit.setVisibility(View.INVISIBLE);
                 break;
             case R.id.activity_order_or_edit_buttonsave:
-                if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
-                    if (btnCheck.isEnabled()) {
-                        Toast.makeText(this, "Button Lưu: Hãy nhấn Check trước khi Lưu", Toast.LENGTH_SHORT).show();
-                    } else {
-                        themMoi_themDonDatHang();
-                        Toast.makeText(this, "Đã Lưu Vào DB", Toast.LENGTH_SHORT).show();
-                        i = new Intent(OrderOrEditActivity.this, MainActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
+                if (btnCheck.isEnabled()) {
+                    Toast.makeText(this, "Button Lưu: Hãy nhấn Check trước khi Lưu", Toast.LENGTH_SHORT).show();
+                } else {
+                    themMoi_themDonDatHang();
+                    Toast.makeText(this, "Đã Lưu Vào DB", Toast.LENGTH_SHORT).show();
+                    i = new Intent(OrderOrEditActivity.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
                 }
                 break;
         }
@@ -375,12 +383,13 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         }
-        Log.e("OrderOrEdit", "" + listSPUpdate.toString() + "\n");
-        Log.e("OrderOrEdit", "" + mDonDatHang.toString() + "\n");
-        Log.e("OrderOrEdit", "" + listChiTietDonDH.toString() + "\n");
-        Log.e("OrderOrEdit", "" + listSanPham.toString() + "\n");
-        Log.e("OrderOrEdit", "" + listThanhTien.toString() + "\n");
-        themMoi_themDonDatHangVaoDB(mDonDatHang, listChiTietDonDH, listSPUpdate);
+        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
+        Log.e("OrderOrEdit Dieu Chỉnh:", "" + mDonDatHang.toString() + "\n");
+        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listChiTietDonDH.toString() + "\n");
+        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSanPham.toString() + "\n");
+        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listThanhTien.toString() + "\n");
+        if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
+            themMoi_themDonDatHangVaoDB(mDonDatHang, listChiTietDonDH, listSPUpdate);
     }
 
     private void themMoi_themDonDatHangVaoDB(DonDatHang ddh, ArrayList<ChiTietDonDH> listChiTiet, ArrayList<SanPham> listSanPham) {
@@ -398,6 +407,15 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 Intent i = new Intent(OrderOrEditActivity.this, DialogAmountActivity.class);
                 i.putExtra(COMMAND_SANPHAM, dbTuAssets.getSanPham(listSanPham.get(position).getIdSP()));
                 i.putExtra(COMMAND_SOLUONGTON, listSanPham.get(position).getSoLuongTon());
+                if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
+                    ChiTietDonDH ct = dbTuAssets.getChiTietDDHByIdDDH(mDonDatHang.getIdDDH(), listSanPham.get(position).getIdSP());
+                    int soLuongSP = 0;
+                    if (ct != null) {
+                        soLuongSP = ct.getSoLuong();
+                    }
+                    i.putExtra(COMMAND_SOLUONGSP, soLuongSP);
+                }
+
                 startActivityForResult(i, REQUEST_CODE);
                 break;
         }
@@ -442,6 +460,7 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
             }
         }
         listChiTietDonDH.add(chitiet);
+        Log.e("Main Activity Thong bao", "" + listChiTietDonDH.toString());
         listSanPham.set(getItemPosition, sp);
         listThanhTien.set(getItemPosition, giaTriCTDH + "");
 

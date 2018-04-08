@@ -234,6 +234,22 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         return listCTDDH;
     }
 
+    public ChiTietDonDH getChiTietDDHByIdDDH(int idDonDatHang, int idSP) {
+        String query = "SELECT * FROM ChiTietDonDH\n" +
+                "where idDDH =" + idDonDatHang + " and idSP =" + idSP + ";";
+        ChiTietDonDH ct = null;
+        openDatabase();
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            ct = new ChiTietDonDH(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        closeDatabase();
+        return ct;
+    }
+
     public void themDonDatHang(DonDatHang ddh) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
