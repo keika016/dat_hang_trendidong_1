@@ -1,10 +1,12 @@
 package com.keika.thunghiem01.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Son-Auto on 4/6/2018.
  */
 
-public class DonDatHang {
+public class DonDatHang implements Serializable {
     private int idDDH;
     private String giaTriDDH;
     private String ngayVieng;

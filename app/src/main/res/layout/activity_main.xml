@@ -83,6 +83,7 @@
             android:textColor="@color/colorWhite" />
 
         <Button
+            android:id="@+id/activity_main_buttonDieuChinh"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -93,6 +94,7 @@
             android:textColor="@color/colorWhite" />
 
         <Button
+            android:id="@+id/activity_main_buttonXoa"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"

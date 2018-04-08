@@ -21,6 +21,34 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
     public static final String DBNAME = "thunghiem_03.db";
     public static final String DBLOCATION = "/data/data/com.keika.thunghiem01/databases/";
 
+    //Table
+    public static final String CUAHANG_TB = "CuaHang";
+    public static final String SANPHAM_TB = "SanPham";
+    public static final String DONDATHANG_TB = "DonDatHang";
+    public static final String CHITIETDONDH_TB = "ChiTietDonDH";
+
+    //Thuoc tinh table
+    public static final String CUAHANG_ATTRI_IDCH = "idCH";
+    public static final String CUAHANG_ATTRI_TENCH = "tenCH";
+    public static final String CUAHANG_ATTRI_DIACHICH = "diaChi";
+    public static final String CUAHANG_ATTRI_NGUOILHCH = "nguoiLH";
+    public static final String CUAHANG_ATTRI_SODTCH = "soDT";
+
+    public static final String SANPHAM_ATTRI_IDSP = "idSP";
+    public static final String SANPHAM_ATTRI_TENSP = "tenSP";
+    public static final String SANPHAM_ATTRI_GIASP = "giaSP";
+    public static final String SANPHAM_ATTRI_SOLUONGTON = "soLuongTon";
+
+    public static final String DONDATHANG_ATTRI_IDDDH = "idDDH";
+    public static final String DONDATHANG_ATTRI_GIATRIDDH = "giaTriDDH";
+    public static final String DONDATHANG_ATTRI_NGAYVIENG = "ngayVieng";
+    public static final String DONDATHANG_ATTRI_IDCUAHANG = "idCH";
+
+    public static final String CHITIETDONDH_ATTRI_IDDDH = "idDDH";
+    public static final String CHITIETDONDH_ATTRI_IDSANPHAM = "idSP";
+    public static final String CHITIETDONDH_ATTRI_SOLUONG = "soLuong";
+
+
     private Context context;
     private SQLiteDatabase mDatabase;
 
@@ -123,6 +151,37 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         return ch;
     }
 
+    public CuaHang checkCuaHangExist2(int idCH) {
+        String query = "SELECT * FROM CuaHang AS ch WHERE ch.idCH = " + idCH + ";";
+        CuaHang ch = null;
+        openDatabase();
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            ch = new CuaHang(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        closeDatabase();
+        return ch;
+    }
+
+    public DonDatHang getDonHang(int idDDH) {
+        String query = "SELECT * FROM DonDatHang AS ddh\n" +
+                "WHERE ddh.idDDH = " + idDDH + ";";
+        DonDatHang dDH = null;
+        openDatabase();
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            dDH = new DonDatHang(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        closeDatabase();
+        return dDH;
+    }
+
     public boolean checkIdCuaHangExist(String s) {
         String query = "SELECT ddh.idDDH FROM DonDatHang AS ddh\n" +
                 "WHERE ddh.idDDH = '" + s + "';";
@@ -157,24 +216,68 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         return sp;
     }
 
-   /* public void themDonDatHang(DonDatHang ddh, ArrayList<ChiTietDonDH> listChiTietDDH, ArrayList<Integer> listSoLuongTon) {
+    public ArrayList<ChiTietDonDH> getListChiTietDDHByIdDDH(int idDonDatHang) {
+        String query = "SELECT * FROM ChiTietDonDH\n" +
+                "where idDDH =" + idDonDatHang + ";";
+        ChiTietDonDH ct = null;
+        ArrayList<ChiTietDonDH> listCTDDH = new ArrayList<ChiTietDonDH>();
+        openDatabase();
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            ct = new ChiTietDonDH(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2));
+            listCTDDH.add(ct);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        closeDatabase();
+        return listCTDDH;
+    }
+
+    public void themDonDatHang(DonDatHang ddh) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
-        values.put(PERSON_ID, p.getId());
-        values.put(PERSON_NAME, p.getName());
-
-        //phải để true = 1, false = 0, thì ct mới hiểu đúng
-        //Male: true - 1, Female: false - 0
-        if (p.isGioitinh())
-            values.put(PERSON_GIOITINH, 1);
-        else
-            values.put(PERSON_GIOITINH, 0);
-
-        values.put(PERSON_SALARY, p.getSalary());
-
-        db.insert(TABLE_NAME, null, values);
+        values.put(DONDATHANG_ATTRI_IDDDH, ddh.getIdDDH());
+        values.put(DONDATHANG_ATTRI_GIATRIDDH, ddh.getGiaTriDDH());
+        values.put(DONDATHANG_ATTRI_NGAYVIENG, ddh.getNgayVieng());
+        values.put(DONDATHANG_ATTRI_IDCUAHANG, ddh.getIdCH());
+        db.insert(DONDATHANG_TB, null, values);
         db.close();
-    }*/
+    }
+
+    public void themChiTietDDH(ArrayList<ChiTietDonDH> listChiTietDDH) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (ChiTietDonDH item : listChiTietDDH) {
+            ContentValues values = new ContentValues();
+            values.put(CHITIETDONDH_ATTRI_IDDDH, item.getIdDDH());
+            values.put(CHITIETDONDH_ATTRI_IDSANPHAM, item.getIdSP());
+            values.put(CHITIETDONDH_ATTRI_SOLUONG, item.getSoLuong());
+            db.insert(CHITIETDONDH_TB, null, values);
+        }
+        db.close();
+    }
+
+    public void updateSanPham(ArrayList<SanPham> listSpUpdate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (SanPham item : listSpUpdate) {
+            ContentValues values = new ContentValues();
+            values.put(SANPHAM_ATTRI_SOLUONGTON, item.getSoLuongTon());
+            //update thành công sẽ trả về giá trị là tổng số dòng của table mà update được
+            int i = db.update(SANPHAM_TB, values, SANPHAM_ATTRI_IDSP + "=?", new String[]{item.getIdSP() + ""});
+        }
+        db.close();
+    }
+
+    public void xoaDonHang(DonDatHang ddh) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DONDATHANG_TB, DONDATHANG_ATTRI_IDDDH + " =? ", new String[]{ddh.getIdDDH() + ""});
+        db.close();
+    }
+
+    public void xoaChiTietDDH(ChiTietDonDH ct) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(CHITIETDONDH_TB, CHITIETDONDH_ATTRI_IDDDH + " =? ", new String[]{ct.getIdDDH() + ""});
+        db.close();
+    }
 
 }

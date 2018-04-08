@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.keika.thunghiem01.adapter.AdapterLV_MainActivity;
 import com.keika.thunghiem01.database.DatabaseDatHang;
+import com.keika.thunghiem01.model.ChiTietDonDH;
 import com.keika.thunghiem01.model.CuaHang;
 import com.keika.thunghiem01.model.DonDatHang;
+import com.keika.thunghiem01.model.SanPham;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,17 +25,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private Button btnThemmoi;
+    private Button btnThemmoi, btnXoa, btnDieuChinh;
     private ListView listViewDSDDH;
     private ArrayList<DonDatHang> listDonDatHang;
     private ArrayList<String> listTenCuaHang;
     private AdapterLV_MainActivity adapterLV_mainActivity;
     private DatabaseDatHang dbTuAssets;
-
+    private int getItemSelected;
     private static final String COMMAND = "command";
     private static final String COMMAND_THEMMOI = "themmoi";
+    private static final String COMMAND_DIEUCHINH = "dieuchinh";
+    private static final String COMMAND_DIEUCHINH_DONDH = "dieuchinh_dondathang";
 
 
     @Override
@@ -43,29 +47,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initView();
         initDatabase();
-
-        listViewDSDDH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Đã click " + position, Toast.LENGTH_SHORT).show();
-            }
-        });
+        listViewDSDDH.setOnItemClickListener(this);
     }
 
     private void initView() {
         btnThemmoi = (Button) findViewById(R.id.activity_main_buttonaddnew);
+        btnXoa = (Button) findViewById(R.id.activity_main_buttonXoa);
+        btnDieuChinh = (Button)findViewById(R.id.activity_main_buttonDieuChinh);
         listViewDSDDH = (ListView) findViewById(R.id.activity_main_listview);
         listDonDatHang = new ArrayList<DonDatHang>();
         listTenCuaHang = new ArrayList<String>();
         adapterLV_mainActivity = new AdapterLV_MainActivity(MainActivity.this, listDonDatHang, listTenCuaHang);
         listViewDSDDH.setAdapter(adapterLV_mainActivity);
         btnThemmoi.setOnClickListener(this);
+        btnXoa.setOnClickListener(this);
+        btnDieuChinh.setOnClickListener(this);
         listViewDSDDH.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listViewDSDDH.setSelector(R.color.colorAccent);
+        getItemSelected = -1;
     }
 
     private void initDatabase() {
         readDatabase();
+        reLoadDatabase();
+    }
+
+    private void reLoadDatabase() {
         listDonDatHang.clear();
         listTenCuaHang.clear();
         listDonDatHang.addAll(dbTuAssets.getListDonDatHang());
@@ -81,6 +88,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 i.putExtra(COMMAND, COMMAND_THEMMOI);
                 startActivity(i);
                 finish();
+                break;
+            case R.id.activity_main_buttonXoa:
+                if (getItemSelected != -1) {
+                    DonDatHang ddh = listDonDatHang.get(getItemSelected);
+                    ArrayList<ChiTietDonDH> listCTDDH = dbTuAssets.getListChiTietDDHByIdDDH(ddh.getIdDDH());
+                    ArrayList<SanPham> listSP = new ArrayList<SanPham>();
+                    for (ChiTietDonDH item : listCTDDH) {
+                        SanPham sp = dbTuAssets.getSanPham(item.getIdSP());
+                        int soLuongTonNew = sp.getSoLuongTon() + item.getSoLuong();
+                        sp.setSoLuongTon(soLuongTonNew);
+                        listSP.add(sp);
+                        dbTuAssets.xoaChiTietDDH(item);
+                    }
+                    dbTuAssets.xoaDonHang(ddh);
+                    dbTuAssets.updateSanPham(listSP);
+                    reLoadDatabase();
+                    getItemSelected = -1;
+                    Toast.makeText(this, "Đã xóa", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Phải chọn 1 Đơn Hàng nào đó", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.activity_main_buttonDieuChinh:
+                if (getItemSelected != -1) {
+                    DonDatHang ddh = dbTuAssets.getDonHang(listDonDatHang.get(getItemSelected).getIdDDH());
+                    i = new Intent(MainActivity.this, OrderOrEditActivity.class);
+                    i.putExtra(COMMAND, COMMAND_DIEUCHINH);
+                    i.putExtra(COMMAND_DIEUCHINH_DONDH, ddh);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Phải chọn 1 Đơn Hàng nào đó", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
         }
     }
@@ -120,4 +161,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return false;
         }
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getId()) {
+            case R.id.activity_main_listview:
+                Toast.makeText(MainActivity.this, "Đã click " + position, Toast.LENGTH_SHORT).show();
+                getItemSelected = position;
+                break;
+        }
+    }
+
 }

@@ -50,9 +50,12 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
     private DonDatHang mDonDatHang;
     private ArrayList<ChiTietDonDH> listChiTietDonDH;
 
-
+    //Từ Main qua
     private static final String COMMAND = "command";
     private static final String COMMAND_THEMMOI = "themmoi";
+    private static final String COMMAND_DIEUCHINH = "dieuchinh";
+    private static final String COMMAND_DIEUCHINH_DONDH = "dieuchinh_dondathang";
+    //Chuyển qua cho Dialog Amount
     private static final String COMMAND_SANPHAM = "sanpham";
     private static final String COMMAND_SOLUONG = "soluong";
     private static final String COMMAND_SOLUONGTON = "soluongton";
@@ -69,6 +72,7 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         forDateAndTime();
         readDatabase();
         themMoi_LoadListSanPham();
+        dieuChinh_LoadInfoCuaHang();
         Log.e("OrderOrEdit", "onCreate");
     }
 
@@ -148,13 +152,66 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         Bundle b = getIntent().getExtras();
         if (b.get(COMMAND).toString().compareTo(COMMAND_THEMMOI) == 0) {
             trangThai = COMMAND_THEMMOI;
+        } else {
+            trangThai = COMMAND_DIEUCHINH;
+        }
+    }
+
+    private void dieuChinh_LoadInfoCuaHang() {
+        if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
+            Bundle b = getIntent().getExtras();
+            mDonDatHang = (DonDatHang) b.get(COMMAND_DIEUCHINH_DONDH);
+            Log.e("Order or Edit", mDonDatHang + "");
+            Log.e("Order or Edit", dbTuAssets.checkCuaHangExist2(mDonDatHang.getIdCH()) + "");
+            CuaHang a = dbTuAssets.checkCuaHangExist2(mDonDatHang.getIdCH());
+
+            edtTenCuaHang.setText(a.getTenCH() + "");
+            edtDiaChi.setText(a.getDiaChi() + "");
+            edtNguoiLienHe.setText(a.getNguoiLH() + "");
+            edtSoDT.setText(a.getSoDT() + "");
+            edtSoDH.setText(mDonDatHang.getIdDDH() + "");
+            edtNgayVieng.setText(mDonDatHang.getNgayVieng() + "");
+            setEditTextUnTouch(edtSoDH);
+            dieuChinh_LoadListSanPham();
+            setButtonEnable(btnRedo);
+            setButtonDisable(btnCheck);
+        }
+    }
+
+    private void dieuChinh_LoadListSanPham() {
+        if (trangThai.compareTo(COMMAND_DIEUCHINH_DONDH) == 0) {
+            listSanPham.clear();
+            listChiTietDonDH.clear();
+            listThanhTien.clear();
+            listSanPham.addAll(dbTuAssets.getListSanPhamConHang());
+            listChiTietDonDH.addAll(dbTuAssets.getListChiTietDDHByIdDDH(mDonDatHang.getIdDDH()));
+
+            boolean flag = false;
+            for (SanPham sp : listSanPham) {
+                for (ChiTietDonDH ct : listChiTietDonDH) {
+                    if (ct.getIdSP() == sp.getIdSP()) {
+                        long thanhtien = ct.getSoLuong() * Long.parseLong(sp.getGiaSP());
+                        listThanhTien.add(thanhtien + "");
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag == true)
+                    continue;
+                else {
+                    listThanhTien.add("0");
+                }
+            }
+            adapterLV_orderOrEdit.notifyDataSetChanged();
+            mDonDatHang.setNgayVieng(edtNgayVieng.getText().toString().trim() + "");
+            tvTongGiaTriHD.setText(mDonDatHang.getGiaTriDDH() + "");
+            imageView.setVisibility(View.INVISIBLE);
+            listViewOrderOrEdit.setVisibility(View.VISIBLE);
         }
     }
 
     private void forButtonLuu() {
-        if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
-            setButtonLuuDisable();
-        }
+        setButtonLuuDisable();
     }
 
     private void setButtonLuuEnable() {
@@ -175,7 +232,8 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
     private void themMoi_LoadInfoCuaHang(CuaHang cuaHang) {
         setEditTextUnTouch(edtTenCuaHang);
         setEditTextUnTouch(edtSoDH);
-        setEditTextUnTouch(edtDiaChi);
+        if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
+            setEditTextUnTouch(edtDiaChi);
         edtNguoiLienHe.setText(cuaHang.getNguoiLH() + "");
         edtSoDT.setText(cuaHang.getSoDT());
 
@@ -237,8 +295,9 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.activity_order_or_edit_buttoncheck:
-                if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
-                    if (checkEditTextNotEmpty() == true) {
+
+                if (checkEditTextNotEmpty() == true) {
+                    if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
                         if (checkLaSoNguyenDuong(edtSoDH.getText().toString().trim())) {
                             CuaHang a = new CuaHang();
                             a = dbTuAssets.checkTenCuaHangExist(edtTenCuaHang.getText().toString().trim(), edtDiaChi.getText().toString().trim());
@@ -258,28 +317,41 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                             Toast.makeText(this, "Số DH phải là số nguyên dương", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(this, "Phải nhập đủ Tên CH; Địa Chỉ CH; Số DH", Toast.LENGTH_SHORT).show();
+                        CuaHang a = new CuaHang();
+                        a = dbTuAssets.checkTenCuaHangExist(edtTenCuaHang.getText().toString().trim(), edtDiaChi.getText().toString().trim());
+                        if (a != null)
+                            themMoi_LoadInfoCuaHang(a);
+                        else {
+                            String s = "-Cửa hàng hoặc Địa Chỉ không tồn tại ";
+                            Toast.makeText(this, "Sai: " + s, Toast.LENGTH_SHORT).show();
+                        }
+
                     }
-                } else Toast.makeText(this, "Khong phai them moi", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this, "Phải nhập đủ Tên CH; Địa Chỉ CH; Số DH", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.activity_order_or_edit_buttonredo:
-                if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
-                    setEditTextTouch(edtTenCuaHang);
-                    setEditTextTouch(edtDiaChi);
+                setEditTextTouch(edtTenCuaHang);
+                setEditTextTouch(edtDiaChi);
+                if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
                     setEditTextTouch(edtSoDH);
-                    setButtonEnable(btnCheck);
-                    setButtonDisable(btnRedo);
-                    imageView.setVisibility(View.VISIBLE);
-                    listViewOrderOrEdit.setVisibility(View.INVISIBLE);
-                }
+                setButtonEnable(btnCheck);
+                setButtonDisable(btnRedo);
+                imageView.setVisibility(View.VISIBLE);
+                listViewOrderOrEdit.setVisibility(View.INVISIBLE);
                 break;
             case R.id.activity_order_or_edit_buttonsave:
                 if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
                     if (btnCheck.isEnabled()) {
                         Toast.makeText(this, "Button Lưu: Hãy nhấn Check trước khi Lưu", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Button Lưu", Toast.LENGTH_SHORT).show();
                         themMoi_themDonDatHang();
+                        Toast.makeText(this, "Đã Lưu Vào DB", Toast.LENGTH_SHORT).show();
+                        i = new Intent(OrderOrEditActivity.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
                     }
                 }
                 break;
@@ -304,11 +376,17 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
             }
         }
         Log.e("OrderOrEdit", "" + listSPUpdate.toString() + "\n");
-
         Log.e("OrderOrEdit", "" + mDonDatHang.toString() + "\n");
         Log.e("OrderOrEdit", "" + listChiTietDonDH.toString() + "\n");
         Log.e("OrderOrEdit", "" + listSanPham.toString() + "\n");
         Log.e("OrderOrEdit", "" + listThanhTien.toString() + "\n");
+        themMoi_themDonDatHangVaoDB(mDonDatHang, listChiTietDonDH, listSPUpdate);
+    }
+
+    private void themMoi_themDonDatHangVaoDB(DonDatHang ddh, ArrayList<ChiTietDonDH> listChiTiet, ArrayList<SanPham> listSanPham) {
+        dbTuAssets.themDonDatHang(ddh);
+        dbTuAssets.themChiTietDDH(listChiTiet);
+        dbTuAssets.updateSanPham(listSanPham);
     }
 
     @Override
