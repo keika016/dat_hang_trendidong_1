@@ -15,10 +15,12 @@ import com.keika.thunghiem01.model.SanPham;
 public class DialogAmountActivity extends Activity implements View.OnClickListener {
 
     private Button btnHuy, btnDongY;
-    private TextView tvMaSP, tvTenSP, tvGiaSP, tvSoLuongTon;
+    private TextView tvMaSP, tvTenSP, tvGiaSP, tvSoLuongTon, tvMax;
     private EditText edtSoLuong;
     private SanPham sanPham;
     private int soLuongSp;
+    private int max;
+    private int soluongLayMax;
 
     private static final String COMMAND_SANPHAM = "sanpham";
     private static final String COMMAND_SOLUONG = "soluong";
@@ -41,11 +43,13 @@ public class DialogAmountActivity extends Activity implements View.OnClickListen
         tvTenSP = (TextView) findViewById(R.id.activity_dialog_amount_tvTenSP);
         tvGiaSP = (TextView) findViewById(R.id.activity_dialog_amount_tvGiaSP);
         tvSoLuongTon = (TextView) findViewById(R.id.activity_dialog_amount_tvSoLuongTon);
+        tvMax = (TextView) findViewById(R.id.activity_dialog_amount_Max);
         edtSoLuong = (EditText) findViewById(R.id.activity_dialog_amount_edtSoLuong);
         btnHuy = (Button) findViewById(R.id.activity_dialog_amount_buttonHuy);
         btnDongY = (Button) findViewById(R.id.activity_dialog_amount_buttonDongY);
         sanPham = new SanPham();
         soLuongSp = -1;
+        max = -1;
         btnHuy.setOnClickListener(this);
         btnDongY.setOnClickListener(this);
     }
@@ -65,10 +69,22 @@ public class DialogAmountActivity extends Activity implements View.OnClickListen
         }
         if (b.get(COMMAND_SOLUONGSP) != null) {
             soLuongSp = (int) b.get(COMMAND_SOLUONGSP);
-            Log.e("Dialog Amout: ", soLuongSp + " " + tinhSoLuongKhiCoThanhTien() + " " + (Integer) b.get(COMMAND_SOLUONGTON));
+            Log.e("Dialog Amout: ", soLuongSp + " " + sanPham.getSoLuongTon() + " " + (Integer) b.get(COMMAND_SOLUONGTON));
             int soluong = (tinhSoLuongKhiCoThanhTien() - (Integer) b.get(COMMAND_SOLUONGTON));
             edtSoLuong.setText(soluong + "");
-            tvSoLuongTon.setText(sanPham.getSoLuongTon() + "(Hiện tại) - Max(" + tinhSoLuongKhiCoThanhTien() + ")");
+            if ((int) b.get(COMMAND_SOLUONGSP) != 0) {
+                //đã có trong db
+                this.max = sanPham.getSoLuongTon() + (int) b.get(COMMAND_SOLUONGSP);
+                tvMax.setText("Max: " + max);
+
+            } else {
+                //chưa có trong db
+                max = sanPham.getSoLuongTon();
+                tvSoLuongTon.setText(sanPham.getSoLuongTon()+"");
+                tvMax.setText("Max: " + max);
+            }
+
+
         }
     }
 
@@ -110,11 +126,14 @@ public class DialogAmountActivity extends Activity implements View.OnClickListen
                             }
                         } else {
                             int soLuong = Integer.parseInt(s);
-                            int max = tinhSoLuongKhiCoThanhTien();
+                            Bundle b = getIntent().getExtras();
                             if (soLuong <= max) {
                                 int soluongTonNew = 0;
-                                soluongTonNew = max - soLuong;
+                                SanPham sp = (SanPham) b.get(COMMAND_SANPHAM);
+                                soluongTonNew = sp.getSoLuongTon() + (soLuongSp - soLuong);
                                 clickDongY(soluongTonNew, soLuong);
+                                Log.e("Dieu chinh: ", "Điều Chỉnh:" + soluongTonNew + " - SLT_DB: " + sp.getSoLuongTon() + " - SLT_Cu" + soLuongSp + " - SL:" + soLuong);
+                                Toast.makeText(this, "Điều Chỉnh:" + soluongTonNew + " - SLT_DB: " + sp.getSoLuongTon() + " - SLT_Cu" + soLuongSp + " - SL:" + soLuong, Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(this, "Điều Chỉnh: Số lượng phải nhỏ hơn hoặc bằng Max", Toast.LENGTH_SHORT).show();
                             }

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.keika.thunghiem01.DialogAmountActivity"
-    android:padding="2dp">
+    android:padding="2dp"
+    tools:context="com.keika.thunghiem01.DialogAmountActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,6 +82,7 @@
                 android:gravity="center"
                 android:hint="@string/layout_activity_dialogamount_textview_default" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -123,8 +124,16 @@
                 android:id="@+id/activity_dialog_amount_edtSoLuong"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="7.5"
+                android:layout_weight="5.5"
                 android:hint="@string/layout_activity_dialogamount_row5_c2" />
+
+            <TextView
+                android:id="@+id/activity_dialog_amount_Max"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:hint="@string/layout_activity_dialogamount_textview_default" />
         </LinearLayout>
 
     </LinearLayout>

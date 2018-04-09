@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.keika.thunghiem01.model.ChiTietDonDH;
 import com.keika.thunghiem01.model.CuaHang;

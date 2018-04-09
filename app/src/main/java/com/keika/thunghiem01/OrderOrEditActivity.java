@@ -382,12 +382,34 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         }
+        if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
+            if (listSPUpdate.size() >= 2) {
+                for (int i = 0; i < listSPUpdate.size() - 1; i++) {
+                    for (int j = 1; j < listSPUpdate.size(); j++) {
+                        if (listSPUpdate.get(i).getIdSP() == listSPUpdate.get(j).getIdSP()) {
+                            listSPUpdate.remove(i);
+                        }
+                    }
+                }
+            }
+            for (SanPham item : listSPUpdate) {
+                for (ChiTietDonDH ct : listChiTietDonDH) {
+                    if (item.getIdSP() == ct.getIdSP()) {
+                        int soLuongTonDB = dbTuAssets.getSanPham(item.getIdSP()).getSoLuongTon();
+                        int sltNew = soLuongTonDB - ct.getSoLuong();
+                        item.setSoLuongTon(sltNew);
+                    }
+                }
+            }
+            Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
+        }
 
-        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
+//////////////////////////Sai//////////////////////
+       /* Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + mDonDatHang.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + listChiTietDonDH.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSanPham.toString() + "\n");
-        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listThanhTien.toString() + "\n");
+        Log.e("OrderOrEdit Dieu Chỉnh:", "" + listThanhTien.toString() + "\n");*/
         if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
             themMoi_themDonDatHangVaoDB(mDonDatHang, listChiTietDonDH, listSPUpdate);
         else
@@ -405,6 +427,7 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         dbTuAssets.updateDonDatHang(ddh);
         dbTuAssets.updateChitiet(listChiTiet);
         dbTuAssets.themChiTietDDH_withCheckExist(listChiTiet);
+        //Log.e("OrderOrEdit ", "Dieu Chỉnh listSP UPDate:" + listSanPham.toString() + "\n");
         dbTuAssets.updateSanPham(listSanPham);
     }
 
@@ -473,7 +496,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         Log.e("Main Activity Thong bao", "" + listChiTietDonDH.toString());
         listSanPham.set(getItemPosition, sp);
         listThanhTien.set(getItemPosition, giaTriCTDH + "");
-
         long giaTriDDH = 0;
         for (String thanhtien : listThanhTien) {
             long tien = Long.parseLong(thanhtien.toString());
