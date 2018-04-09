@@ -181,10 +181,9 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
             listSanPham.clear();
             listChiTietDonDH.clear();
             listThanhTien.clear();
-            listSanPham.addAll(dbTuAssets.getListSanPhamConHang());
+            listSanPham.addAll(dbTuAssets.getListSanPham());
             listChiTietDonDH.addAll(dbTuAssets.getListChiTietDDHByIdDDH(mDonDatHang.getIdDDH()));
             Log.e("OrderOrEdit", "onStop" + listChiTietDonDH.toString());
-            listSanPham.addAll(dbTuAssets.getListSanPhamConHang());
 
             ArrayList<ChiTietDonDH> listCTDemo = listChiTietDonDH;
             boolean flag = false;
@@ -205,7 +204,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                     listThanhTien.add("0");
                 }
             }
-
             adapterLV_orderOrEdit.notifyDataSetChanged();
             tvTongGiaTriHD.setText(mDonDatHang.getGiaTriDDH() + "");
             imageView.setVisibility(View.INVISIBLE);
@@ -245,16 +243,20 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         imageView.setVisibility(View.INVISIBLE);
         listViewOrderOrEdit.setVisibility(View.VISIBLE);
 
-        Bundle b = getIntent().getExtras();
-        DonDatHang a = (DonDatHang) b.get(COMMAND_DIEUCHINH_DONDH);
-        if (a.getIdCH() != cuaHang.getIdCH()) {
-            mDonDatHang.setIdCH(cuaHang.getIdCH());
-            setButtonLuuEnable();
+        if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
+            Bundle b = getIntent().getExtras();
+            DonDatHang a = (DonDatHang) b.get(COMMAND_DIEUCHINH_DONDH);
+            if (a.getIdCH() != cuaHang.getIdCH()) {
+                mDonDatHang.setIdCH(cuaHang.getIdCH());
+                setButtonLuuEnable();
+            }
         }
+        if (trangThai.compareTo(COMMAND_THEMMOI) == 0)
+            mDonDatHang.setIdCH(cuaHang.getIdCH());
+
 
         mDonDatHang.setIdDDH(Integer.parseInt(edtSoDH.getText().toString().trim()));
     }
-
 
     private void themMoi_LoadListSanPham() {
         if (trangThai.compareTo(COMMAND_THEMMOI) == 0) {
@@ -382,29 +384,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         }
-        if (trangThai.compareTo(COMMAND_DIEUCHINH) == 0) {
-            if (listSPUpdate.size() >= 2) {
-                for (int i = 0; i < listSPUpdate.size() - 1; i++) {
-                    for (int j = 1; j < listSPUpdate.size(); j++) {
-                        if (listSPUpdate.get(i).getIdSP() == listSPUpdate.get(j).getIdSP()) {
-                            listSPUpdate.remove(i);
-                        }
-                    }
-                }
-            }
-            for (SanPham item : listSPUpdate) {
-                for (ChiTietDonDH ct : listChiTietDonDH) {
-                    if (item.getIdSP() == ct.getIdSP()) {
-                        int soLuongTonDB = dbTuAssets.getSanPham(item.getIdSP()).getSoLuongTon();
-                        int sltNew = soLuongTonDB - ct.getSoLuong();
-                        item.setSoLuongTon(sltNew);
-                    }
-                }
-            }
-            Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
-        }
-
-//////////////////////////Sai//////////////////////
        /* Log.e("OrderOrEdit Dieu Chỉnh:", "" + listSPUpdate.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + mDonDatHang.toString() + "\n");
         Log.e("OrderOrEdit Dieu Chỉnh:", "" + listChiTietDonDH.toString() + "\n");
@@ -427,7 +406,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
         dbTuAssets.updateDonDatHang(ddh);
         dbTuAssets.updateChitiet(listChiTiet);
         dbTuAssets.themChiTietDDH_withCheckExist(listChiTiet);
-        //Log.e("OrderOrEdit ", "Dieu Chỉnh listSP UPDate:" + listSanPham.toString() + "\n");
         dbTuAssets.updateSanPham(listSanPham);
     }
 
@@ -493,7 +471,6 @@ public class OrderOrEditActivity extends AppCompatActivity implements View.OnCli
             }
         }
         listChiTietDonDH.add(chitiet);
-        Log.e("Main Activity Thong bao", "" + listChiTietDonDH.toString());
         listSanPham.set(getItemPosition, sp);
         listThanhTien.set(getItemPosition, giaTriCTDH + "");
         long giaTriDDH = 0;

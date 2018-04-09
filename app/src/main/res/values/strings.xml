@@ -47,7 +47,7 @@
     <string name="layout_activity_dialogamount_row2_c1">Tên SP</string>
     <string name="layout_activity_dialogamount_row3_c1">Giá</string>
     <string name="layout_activity_dialogamount_row4_c1">Số lượng tồn</string>
-    <string name="layout_activity_dialogamount_row5_c1">Số lượng</string>
+    <string name="layout_activity_dialogamount_row5_c1">Số lượng cần lấy</string>
     <string name="layout_activity_dialogamount_row5_c2">Nhập Số lượng</string>
     <string name="layout_activity_dialogamount_textview_default">DEFAULT</string>
 </resources>

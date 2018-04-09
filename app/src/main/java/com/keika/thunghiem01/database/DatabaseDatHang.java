@@ -135,6 +135,24 @@ public class DatabaseDatHang extends SQLiteOpenHelper {
         return listSP;
     }
 
+    public ArrayList<SanPham> getListSanPham() {
+        SanPham sp = null;
+        ArrayList<SanPham> listSP = new ArrayList<SanPham>();
+        openDatabase();
+        String query = "select * from SanPham as sp\n" +
+                ";";
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            sp = new SanPham(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
+            listSP.add(sp);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        closeDatabase();
+        return listSP;
+    }
+
     public CuaHang checkTenCuaHangExist(String tenCH, String diaChiCH) {
         String query = "SELECT * FROM CuaHang AS ch\n" +
                 "WHERE ch.tenCH = '" + tenCH + "' AND ch.diaChi = '" + diaChiCH + "';";

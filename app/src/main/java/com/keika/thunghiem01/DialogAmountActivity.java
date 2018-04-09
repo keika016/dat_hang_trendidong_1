@@ -15,12 +15,11 @@ import com.keika.thunghiem01.model.SanPham;
 public class DialogAmountActivity extends Activity implements View.OnClickListener {
 
     private Button btnHuy, btnDongY;
-    private TextView tvMaSP, tvTenSP, tvGiaSP, tvSoLuongTon, tvMax;
+    private TextView tvMaSP, tvTenSP, tvGiaSP, tvSoLuongTon, tvMax, tvSLTitle;
     private EditText edtSoLuong;
     private SanPham sanPham;
     private int soLuongSp;
     private int max;
-    private int soluongLayMax;
 
     private static final String COMMAND_SANPHAM = "sanpham";
     private static final String COMMAND_SOLUONG = "soluong";
@@ -43,6 +42,7 @@ public class DialogAmountActivity extends Activity implements View.OnClickListen
         tvTenSP = (TextView) findViewById(R.id.activity_dialog_amount_tvTenSP);
         tvGiaSP = (TextView) findViewById(R.id.activity_dialog_amount_tvGiaSP);
         tvSoLuongTon = (TextView) findViewById(R.id.activity_dialog_amount_tvSoLuongTon);
+        tvSLTitle = (TextView) findViewById(R.id.activity_dialog_amount_tvSLTitle);
         tvMax = (TextView) findViewById(R.id.activity_dialog_amount_Max);
         edtSoLuong = (EditText) findViewById(R.id.activity_dialog_amount_edtSoLuong);
         btnHuy = (Button) findViewById(R.id.activity_dialog_amount_buttonHuy);
@@ -65,13 +65,15 @@ public class DialogAmountActivity extends Activity implements View.OnClickListen
         }
         if (b.get(COMMAND_SOLUONGTON) != null) {
             int soluong = (tinhSoLuongKhiCoThanhTien() - (Integer) b.get(COMMAND_SOLUONGTON));
-            edtSoLuong.setText(soluong + "");
+            if (b.get(COMMAND_SOLUONGSP) == null)
+            edtSoLuong.setText((soluong+1) + "");
         }
         if (b.get(COMMAND_SOLUONGSP) != null) {
             soLuongSp = (int) b.get(COMMAND_SOLUONGSP);
             Log.e("Dialog Amout: ", soLuongSp + " " + sanPham.getSoLuongTon() + " " + (Integer) b.get(COMMAND_SOLUONGTON));
             int soluong = (tinhSoLuongKhiCoThanhTien() - (Integer) b.get(COMMAND_SOLUONGTON));
             edtSoLuong.setText(soluong + "");
+            tvSLTitle.setText("Số lượng đã lấy");
             if ((int) b.get(COMMAND_SOLUONGSP) != 0) {
                 //đã có trong db
                 this.max = sanPham.getSoLuongTon() + (int) b.get(COMMAND_SOLUONGSP);
@@ -80,11 +82,9 @@ public class DialogAmountActivity extends Activity implements View.OnClickListen
             } else {
                 //chưa có trong db
                 max = sanPham.getSoLuongTon();
-                tvSoLuongTon.setText(sanPham.getSoLuongTon()+"");
+                tvSoLuongTon.setText(sanPham.getSoLuongTon() + "");
                 tvMax.setText("Max: " + max);
             }
-
-
         }
     }
 
